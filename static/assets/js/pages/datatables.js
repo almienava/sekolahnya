@@ -26,7 +26,7 @@ $(document).ready(function() {
         ]
     });
 
-    var table_pelajaran = $('#table-pelajaran').DataTable({
+    var table_pengajar = $('#table-pengajar').DataTable({
         responsive: true,
         paging:false,
         fixedHeader: true,
@@ -34,11 +34,10 @@ $(document).ready(function() {
         "bScrollInfinite": true,
         "bScrollCollapse": true,
         "scrollY": "350px",
-    
+        ordering:false,
         columnDefs: [
-            { targets: 0, responsivePriority: 1 ,sortable:true},  // Kolom pertama dengan prioritas tampilan tinggi
-            { targets: 1, responsivePriority: 2 },
-            { targets:'_all',sortable:false}  // Kolom terakhir dengan prioritas tampilan rendah
+            { targets: 0, responsivePriority: 1},
+            { targets: 1, responsivePriority: 2 }
         ]
     });
 

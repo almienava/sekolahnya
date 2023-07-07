@@ -11,6 +11,7 @@ urlpatterns = [
     path('jadwal-pelajaran/', views.jadwal_pelajaran, name='jadwal-pelajaran-siswa'),
     path('list-pengajar', views.list_pengajar, name='list-pengajar-siswa'),
     path('my-profile', views.profile_siswa, name='profile-siswa'),
+    path('profile/<str:username_user>', views.profile_user, name='profile-user'),
     path('tugas', views.tugas_siswa, name='tugas-siswa'),
     path('tugas/<str:id_tugas>', views.detail_tugas, name='detail-tugas-siswa'),
     path('ubah-password', views.ganti_password, name='ganti-pas-siswa'),

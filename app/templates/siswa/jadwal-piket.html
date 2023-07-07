@@ -42,12 +42,14 @@
                                 <div class="mb-3 text-align">
                                     {% for user_list in jadwal_piket %}
                                     {% if hari in user_list.hari %}
+                                    <a href="/profile/{{user_list.id_user.username}}" style="text-decoration: none;  color: inherit;">
                                       <div class="d-flex align-items-center mb-2"> <!-- Menambahkan mb-2 untuk memberikan jarak antara foto -->
                                         <div class="avatar">
                                           <img src="{{ user_list.id_user.profile_pic }}">
-                                          </div>
+                                        </div>
                                         <p class="font-bold ms-3 mb-0">{{ user_list.id_user.nama_lengkap}}</p>
                                       </div>
+                                    </a>
                                     {% endif %}
                                     {% endfor %}
                                   </div>

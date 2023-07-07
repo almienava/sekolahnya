@@ -41,7 +41,7 @@
                                 </div>
                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                     <h6 class="text-muted font-semibold">Tugas Tersedia</h6>
-                                    <h6 class="font-extrabold mb-0">2</h6>
+                                    <h6 class="font-extrabold mb-0">{{tugas_tersedia}}</h6>
                                 </div>
                             </div>
                         </div>
@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                     <h6 class="text-muted font-semibold">Tugas Selesai</h6>
-                                    <h6 class="font-extrabold mb-0">11</h6>
+                                    <h6 class="font-extrabold mb-0">{{tugas_selesai}}</h6>
                                 </div>
                             </div>
                         </div>
@@ -105,15 +105,16 @@
                                         {% for data in jadwal_pelajaran %}
                                         <tr>
                                             <td class="col-4">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar avatar-md">
-                                                        <img src="{{data.id_pelajaran.id_guru.profile_pic}}">
-
+                                                        <div class="d-flex align-items-center">
+                                                        <div class="avatar avatar-md">
+                                                            <img src="{{data.id_pelajaran.id_guru.profile_pic}}">
+                                                        </div>
+                                                        <p class="ms-3 mb-0">
+                                                            {{data.id_pelajaran.id_guru.nama_lengkap}}
+                                                        </p>
                                                     </div>
-                                                    <p class="font-bold ms-3 mb-0">
-                                                        {{data.id_pelajaran.id_guru.nama_lengkap}}</p>
-                                                </div>
                                             </td>
+                                            
                                             <td class="col-auto text-center">
                                                 <p class=" mb-0">{{data.id_pelajaran.nama_pelajaran|upper}}</p>
                                             </td>
@@ -138,15 +139,17 @@
                 <hr class="mt-0">
                 <div class="card-content pb-4">
                     {% for x in piket %}
+                    <a href="/profile/{{x.id_user.username}}">
                     <div class="recent-message d-flex px-4 py-3">
-                        <div class="avatar avatar-lg">
-                            <img src="{{x.id_user.profile_pic}}">
+                            <div class="avatar avatar-lg">
+                                <img src="{{x.id_user.profile_pic}}">
+                            </div>
+                            <div class="name ms-4">
+                                <h6 class="mb-1">{{x.id_user.nama_lengkap}}</h6>
+                                <p class="text-muted mb-0">@{{x.id_user.username}}</p>
+                            </div>
                         </div>
-                        <div class="name ms-4">
-                            <h5 class="mb-1">{{x.id_user.nama_lengkap}}</h5>
-                            <h6 class="text-muted mb-0">@{{x.id_user.username}}</h6>
-                        </div>
-                    </div>
+                    </a>
                     {%endfor%}
                 </div>
             </div>

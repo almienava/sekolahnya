@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 from django.contrib import messages
 import requests
 from django.contrib.auth.hashers import check_password,make_password
-from django.db.models import Sum
+from django.db.models import Sum,Q
 
 url_login = '/login'
 
@@ -44,6 +44,8 @@ def kas_data(request):
     return data_kas,total_nominal
 
 
+
+
 # BAGIAN SISWA
 
 
@@ -55,9 +57,17 @@ def dashboard_siswa(request):
     user = request.user
     piket = JadwalPiket.objects.filter(hari=hari_ini,id_kelas =user.id_kelas)
     jadwal_pelajaran = JadwalPelajaran.objects.filter(hari=hari_ini,id_kelas =user.id_kelas)
+    tugas = TugasUser.objects.filter(Q(id_user=user.id_user))
+
+    
+    tugas_selesai = tugas.filter(Q(status_tugas=1)).count()
+    tugas_ = tugas.filter(Q(status_tugas=0))|tugas.filter(status_tugas=2)
+    tugas_tersedia = tugas_.count()
     return render(request, 'siswa/dashboard-siswa.html',
                    {'hari_ini': hari_ini,
-                    'piket':piket,'jadwal_pelajaran':jadwal_pelajaran,'total_kas':kas_data(request)[1]})
+                    'piket':piket,'jadwal_pelajaran':jadwal_pelajaran,
+                    'total_kas':kas_data(request)[1],'tugas_selesai':tugas_selesai,
+                    'tugas_tersedia':tugas_tersedia})
 
 
 # jadwal piket siswa
@@ -80,6 +90,17 @@ def jadwal_pelajaran(request):
 def profile_siswa(request):
     data = request.user
     return render(request,'siswa/profile-siswa.html',{'data':data})
+
+@login_required(login_url=url_login)
+@role_required('siswa')
+def profile_user(request,username_user):
+    data = request.user
+    if username_user == data.username:
+        return redirect('profile-siswa')
+    users = UserData.objects.filter(username=username_user)
+    if len(users) == 0:
+        return redirect('home-siswa')
+    return render(request,'siswa/profile-user.html',{'data':users})
 
 
 # tugas siswa
