@@ -1,0 +1,99 @@
+{% extends 'auth/master.html' %}
+{% block content %}
+  {% with body=False %}
+  {% endwith %}
+
+  {% load static %}
+  <!-- Konten lainnya -->
+{% endblock %}
+
+{% block plugins_css %}
+  <link rel="stylesheet" href="{% static 'assets/modules/bootstrap-social/bootstrap-social.css' %}">
+{% endblock %}
+
+{% block content_2 %}
+    <section class="section">
+      <div class="container mt-5">
+        <div class="row">
+          <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-8 offset-xl-2">
+            <div class="login-brand">
+              <img src="{% static 'assets/images/faces/1.jpg' %}" alt="logo" width="100" class="shadow-light rounded-circle">
+            </div>
+
+            <div class="card card-primary">
+              <div class="card-header"><h4>Daftar Siswa</h4></div>
+
+              <div class="card-body">
+                <form method="POST">
+                  {% csrf_token %}
+                  <div class="row">
+                    <div class="form-group col-6">
+                      <label for="fullname">Full Name</label>
+                      <input id="fullname" type="text" class="form-control" name="fullname" placeholder="Fullname" autofocus>
+                    </div>
+                    <div class="form-group col-6">
+                      <label for="username">Username</label>
+                      <input id="username" type="text" class="form-control" name="username" placeholder="Username">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-6">
+                      <label for="email">Email</label>
+                      <input id="email" type="email" class="form-control" name="email" placeholder="example@gmail.com">
+                      <div class="invalid-feedback">
+                      </div>
+                    </div>
+                    <div class="form-group col-6">
+                      <label for="phone">No Handphone</label>
+                      <input id="phone" type="number" class="form-control" name="phone" placeholder="+628xxxxxx">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-6">
+                      <label for="password" class="d-block">Password</label>
+                      <input id="password" type="password" class="form-control pwstrength" data-indicator="pwindicator" name="password" placeholder="Password">
+                      <div id="pwindicator" class="pwindicator">
+                        <div class="bar"></div>
+                        <div class="label"></div>
+                      </div>
+                    </div>
+                    <div class="form-group col-6">
+                      <label for="password2" class="d-block">Password Confirmation</label>
+                      <input id="password2" type="password" class="form-control" name="password-confirm" placeholder="Repeat Password">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" name="agree" class="custom-control-input" id="agree">
+                      <label class="custom-control-label" for="agree">I agree with the terms and conditions</label>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">
+                      Register
+                    </button>
+                    <div class="mt-5 text-muted text-center">
+                      Already have an account? <a href="/login">Login Here</a>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="simple-footer">
+              Copyright by &copy; Sekolahin
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}
+
+{% block plugins_js %}
+  <script src="../node_modules/jquery-pwstrength/jquery.pwstrength.min.js"></script>
+  <script src="../node_modules/selectric/public/jquery.selectric.min.js"></script>
+{% endblock %}
+
+{% block page_js %}
+  <script src="{% static 'assets/js/page/auth-register.js' %}"></script>
+{% endblock %}

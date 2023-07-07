@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{%load static%}
+{% block content %}
+
+<div class="pahe-heading">
+  <div class="page-title">
+      <div class="row">
+        <div class="col-12 col-md-6 order-md-1 order-last">
+          <h3>Jadwal Piket Kelas 7</h3>
+          <p class="text-subtitle text-muted">
+           Jadwal piket yang harus di kerjakan!
+          </p>
+        </div>
+        <div class="col-12 col-md-6 order-md-2 order-first">
+          <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="/dashboard-siswa/">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Jadwal Piket
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="page-content">
+    <section class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="row">
+                              {% for hari in hari_list %}
+                              <div class="col-md-2 col-6.5">
+                                <h4 class="text-center">{{ hari|title }}</h4>
+                                <hr class="mt-0">
+                                <div class="mb-3 text-align">
+                                    {% for user_list in jadwal_piket %}
+                                    {% if hari in user_list.hari %}
+                                      <div class="d-flex align-items-center mb-2"> <!-- Menambahkan mb-2 untuk memberikan jarak antara foto -->
+                                        <div class="avatar">
+                                          <img src="{{ user_list.id_user.profile_pic }}">
+                                          <span class="avatar-status bg-{%if user_list.id_user.is_login%}success{%else%}danger{%endif%}"></span>
+                                        </div>
+                                        <p class="font-bold ms-3 mb-0">{{ user_list.id_user.nama_lengkap}}</p>
+                                      </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                  </div>
+                                <hr class="mt-0">
+                              </div>
+                              {% endfor %}
+                            </div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+</div>
+{% endblock content %}

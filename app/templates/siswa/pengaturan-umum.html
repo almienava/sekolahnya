@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-heading">
+  <div class="page-title">
+    <div class="row">
+      <div class="col-12 col-md-6 order-md-1 order-last">
+        <h3>Pengaturan Umum</h3>
+        <p class="text-subtitle text-muted">
+          Tolong Isi Data nya dengan benar agar tidak terjadi kesalahan dalam mengisi data diri
+        </p>
+      </div>
+      <div class="col-12 col-md-6 order-md-2 order-first">
+        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="/dashboard-siswa/">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Pengaturan Umum
+            </li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+<form method="post" action="/pengaturan-umum" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="page-content">
+    <section class="row">
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-body text-center">
+            <img src="{{data.profile_pic}}" alt="avatar"
+              class="rounded-circle img-fluid" style="width: 150px;">
+            <div class="d-flex justify-content-center align-items-center flex-column">
+              <small id="file-name" class="mb-2 d-none text-muted"></small>
+              <div class="btn btn-primary btn-rounded mt-2">
+                <label class="form-label text-white m-1" for="customFile2"><i class="bi bi-upload"></i> &nbsp;Choose
+                  file</label>
+                <input type="file" class="form-control d-none" id="customFile2" onchange="showFileName(this)" name="avatar" accept="image/*" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="tab-content">
+          <div class="tab-pane fade show active">
+            <div class="mb-3">
+              <label for="username" class="form-label">Nama Lengkap</label>
+              <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" value="{{ data.nama_lengkap }}">
+            </div>
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" name="username" value="{{ data.username }}">
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <small class="text-muted">eg.<i>someone@gmail.com</i></small>
+              <input type="email" class="form-control" id="email" name="email" value="{{ data.email }}">
+            </div>
+            <div class="mb-3">
+              <label for="current-password" class="form-label">No HP</label>
+              <input type="number" readonly="readonly" class="form-control" id="no_hp" name="no_hp" value="{{ data.no_hp }}">
+              <p>
+                <small class="text-muted">Silahkan Hubungi Wali Kelas jika ingin mengganti No Hp</small>
+              </p>
+            </div>
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+          </div>
+        </div>
+      </div>
+      <p>{{data.profil_pic}}</p>
+    </section>
+  </div>
+</form>
+
+<script>
+  function showFileName(input) {
+    var fileName = input.files[0].name;
+    document.getElementById('file-name').innerText = fileName;
+    document.getElementById('file-name').classList.remove('d-none');
+  }
+</script>
+
+{%if messages %}
+  <script src="{% static 'assets/extensions/sweetalert2/sweetalert2.min.js' %}"></script>
+  <script>
+    const Swal3 = Swal.mixin({
+  customClass: {
+  input: 'form-control'
+  }
+  })
+  </script>
+  {% for message in messages %}
+  {% if 'warning' in message.tags %}
+<script>
+  Swal3.fire({
+  icon: "warning",
+  title: "{{message}}",
+  }).then(function() {
+           window.location.href = "/ubah-password";
+        });
+  </script>
+  {%elif 'error' in message.tags%}
+  <script>
+  Swal3.fire({
+  icon: "error",
+  title: "{{message}}",
+  }).then(function() {
+           window.location.href = "/ubah-password";
+        });
+  </script>
+  {%elif 'success' in message.tags%}
+  <script>
+  Swal3.fire({
+  icon: "info",
+  title: "{{message}}",
+  }).then(function() {
+           window.location.href = "/ubah-password";
+        });
+  </script>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{%endblock%}

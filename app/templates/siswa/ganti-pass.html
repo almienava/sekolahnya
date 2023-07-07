@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{%load static%}
+{% block content %}
+
+<div class="pahe-heading">
+  <div class="page-title">
+      <div class="row">
+        <div class="col-12 col-md-6 order-md-1 order-last">
+          <h3>Ubah Password</h3>
+          <p class="text-subtitle text-muted">
+          Password baru harus melebihi 8 karakter.
+          </p>
+        </div>
+        <div class="col-12 col-md-6 order-md-2 order-first">
+          <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="/dashboard-siswa/">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Jadwal Pelajaran
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="page-content">
+    <section class="row justify-content-center"> <!-- Menambahkan kelas justify-content-center -->
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="col-lg-8">
+                <form action="/ubah-password" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <div class="form-group">
+                            <label for="password_lama" class="form-label">Password Lama</label>
+                            <input type="password" class="form-control" id="password_lama" name="password_lama">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-group">
+                            <label for="password_baru" class="form-label">Password Baru</label>
+                            <input type="password" class="form-control" id="password_baru" name="password_baru">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-group">
+                            <label for="password_confirm" class="form-label">Konfirmasi Password</label>
+                            <input type="password" class="form-control" id="password_confirm" name="password_confirm">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </form>
+              </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  {%if messages %}
+  <script src="{% static 'assets/extensions/sweetalert2/sweetalert2.min.js' %}"></script>
+  <script>
+    const Swal3 = Swal.mixin({
+  customClass: {
+  input: 'form-control'
+  }
+  })
+  </script>
+  {% for message in messages %}
+  {% if 'warning' in message.tags %}
+<script>
+  Swal3.fire({
+  icon: "warning",
+  title: "{{message}}",
+  }).then(function() {
+           window.location.href = "/ubah-password";
+        });
+  </script>
+  {%elif 'error' in message.tags%}
+  <script>
+  Swal3.fire({
+  icon: "error",
+  title: "{{message}}",
+  }).then(function() {
+           window.location.href = "/ubah-password";
+        });
+  </script>
+  {%elif 'success' in message.tags%}
+  <script>
+  Swal3.fire({
+  icon: "info",
+  title: "{{message}}",
+  }).then(function() {
+           window.location.href = "/ubah-password";
+        });
+  </script>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endblock content %}

@@ -1,0 +1,112 @@
+{% extends 'auth/master.html' %}
+{% load static %}
+
+
+
+{% block plugins_css %}
+  <link rel="stylesheet" href="{% static 'assets/modules/bootstrap-social/bootstrap-social.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/extensions/sweetalert2/sweetalert2.min.css' %}">
+{% endblock %}
+
+{% block content_2 %}
+<section class="section">
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-8 col-md-6 col-lg-6 col-xl-4">
+        <div class="login-brand">
+          <img src="{% static 'assets/images/logo/sekolahnya2-transformed2.png' %}" alt="logo" style="width: 190px; height: 80px;">
+        </div>
+        <div class="card card-primary shadow-dark">
+          <div class="card-header"><h4>Login Siswa</h4></div>
+
+          <div class="card-body">
+            <form method="POST" action="/login" class="needs-validation" novalidate="">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" type="email" class="form-control" name="email" tabindex="1" required autofocus>
+                <div class="invalid-feedback">
+                  Please fill in your email
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="d-block">
+                  <label for="password" class="control-label">Password</label>
+                  <div class="float-right">
+                    <a href="auth-forgot-password.html" class="text-small">
+                      Forgot Password?
+                    </a>
+                  </div>
+                </div>
+                <input id="password" type="password" class="form-control" name="password" tabindex="2" required>
+                <div class="invalid-feedback">
+                  please fill in your password
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" name="remember" class="custom-control-input" tabindex="3" id="remember-me">
+                  <label class="custom-control-label" for="remember-me">Remember Me</label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
+                  Login
+                </button>
+                
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="simple-footer text-center mt-3">
+          &copy; Sekolahin
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    {% if messages%}
+    <script src="{% static 'assets/extensions/sweetalert2/sweetalert2.min.js' %}"></script>
+  {% for message in messages %}
+  {% if 'success' in message.tags %}
+  <script>
+     const Toast = Swal.mixin({
+  toast: true,
+  position: 'top',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+})
+Toast.fire({
+    icon: 'success',
+    title: 'Logout Berhasil!'
+  })
+  </script>
+  {% elif 'error' in message.tags%}
+  <script>
+    const Swal3 = Swal.mixin({
+  customClass: {
+  input: 'form-control'
+  }
+  })
+  
+  Swal3.fire({
+  icon: "error",
+  title: "Email atau Password Salah!",
+  }).then(function() {
+           window.location.href = "/login";
+        });
+  </script>
+   {% endif %}
+   {% endfor %}
+   {% endif %}
+
+{% endblock %}
