@@ -19,7 +19,7 @@ menu_siswa={
     'Tugas': {'url': '/tugas', 'icon': 'bi bi-file-earmark-text-fill', 'text': 'Tugas'},
     'kas': {'url': f'/kas/', 'icon': 'bi bi-wallet-fill', 'text': 'Kas Kelas'},
     'boarding': {'url': '/boarding/', 'icon': 'bi bi-easel-fill', 'text': 'Boarding Kelas'},
-    'list-pelajaran': {'url': '/list-pelajaran/', 'icon': 'bi bi-person-lines-fill', 'text': 'List Pelajaran'},
+    'list-pengajar': {'url': '/list-pengajar', 'icon': 'bi bi-person-lines-fill', 'text': 'List Pengajar'},
     'setting': {'url': '/', 'icon': 'bi bi-gear-fill', 'text': 'Pengaturan','submenu':[{'title':'Umum','link':'/pengaturan-umum'},{'title':'Ubah Password','link':'/ubah-password'}]}, 
     'logout': {'url': '/logout', 'icon': 'bi bi-box-arrow-left', 'text': 'Logout'}, 
     }

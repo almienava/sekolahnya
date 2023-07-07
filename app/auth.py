@@ -36,7 +36,7 @@ def login_user(request):
                 user.is_login = True
                 user.save()
                 messages.success(request, 'Login Berhasil')
-                return redirect('/login')
+                return redirect('login')
             else:
                 messages.error(request, 'Login Gagal')
                 return render(request, 'auth/login.html', {'title': 'Login'})
@@ -56,7 +56,7 @@ def register_siswa(request):
             fullname = request.POST['fullname']
             phone = request.POST['phone']
             user = UserData.objects.create_user(nama_lengkap=fullname, username=username, email=email, no_hp=phone, password=password,role='siswa')
-            return redirect('/login')
+            return redirect('login')
         else:
             return render(request, 'siswa/auth/register-siswa.html',{'title': 'Register','site_name':'Cryptos.com'})
         
@@ -68,4 +68,4 @@ def logout_view(request):
         request.user.save()
         logout(request)
         messages.success(request, 'Login Berhasil')
-        return redirect('/login')
+        return redirect('login')

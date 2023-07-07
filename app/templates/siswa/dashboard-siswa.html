@@ -14,16 +14,19 @@
                     <div class="card">
                         <div class="card-body px-4 py-4-5">
                             <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon red mb-2">
-                                        <i class="iconly-boldNotification"></i>
+                                <a href="/notifikasi">
+
+                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
+                                        <div class="stats-icon red mb-2">
+                                            <i class="iconly-boldNotification"></i>
+                                        </div>
                                     </div>
+                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                        <h6 class="text-muted font-semibold">Notifikasi Kelas</h6>
+                                        <h6 class="font-extrabold mb-0">42</h6>
+                                    </div>
+                                </a>
                                 </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Informasi Kelasz</h6>
-                                    <h6 class="font-extrabold mb-0">42</h6>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -66,7 +69,6 @@
                         <div class="card-body px-4 py-4-5">
                             <div class="row">
                                 <a href="/kas/">
-
                                     <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
                                         <div class="stats-icon purple mb-2">
                                             <i class="iconly-boldWallet"></i>
@@ -106,8 +108,7 @@
                                                 <div class="d-flex align-items-center">
                                                     <div class="avatar avatar-md">
                                                         <img src="{{data.id_pelajaran.id_guru.profile_pic}}">
-                                                        <span
-                                                            class="avatar-status bg-{%if user_list.id_user.is_login%}success{%else%}danger{%endif%}"></span>
+
                                                     </div>
                                                     <p class="font-bold ms-3 mb-0">
                                                         {{data.id_pelajaran.id_guru.nama_lengkap}}</p>
@@ -140,8 +141,6 @@
                     <div class="recent-message d-flex px-4 py-3">
                         <div class="avatar avatar-lg">
                             <img src="{{x.id_user.profile_pic}}">
-                            <span
-                                class="avatar-status bg-{%if user_list.id_user.is_login%}success{%else%}danger{%endif%}"></span>
                         </div>
                         <div class="name ms-4">
                             <h5 class="mb-1">{{x.id_user.nama_lengkap}}</h5>

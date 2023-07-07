@@ -105,6 +105,21 @@ class TugasUser(models.Model):
     update_at = models.DateTimeField(auto_now_add=True)
     id_user = models.ForeignKey(UserData,on_delete=models.CASCADE,db_column='id_user',null=True)
 
+
+class Notifikasi(models.Model):
+    id_notifikasi = models.AutoField(primary_key=True)
+    type_notif = models.CharField(max_length=255)
+    created_by = models.ForeignKey(UserData,on_delete=models.CASCADE,db_column='created_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+    id_kelas = models.ForeignKey(Kelas,on_delete=models.CASCADE,null=True,db_column='id_kelas')
+
+
+class Notifikasi_user(models.Model):
+    id_notifikasi = models.ForeignKey(Notifikasi,on_delete=models.CASCADE,db_column='id_notifikasi')
+    id_user = models.ForeignKey(UserData,on_delete=models.CASCADE)
+    status_buka = models.BooleanField(default=False)
+
+
 # class DepositMethod(models.Model):
 #     method_id = models.AutoField(primary_key=True)
 #     name = models.SlugField(max_length=100, unique=True)

@@ -32,10 +32,9 @@
 <div class="page-content">
     <section class="row">
         <div class="col-12">
-            <div class="row">
             <div class="card">
                 <div class="card-header">
-                   <h4>List Daftar Pelajaran</h4>
+                   <h4>List Daftar Pengajar</h4>
                 </div>
                     <div class="card-body px-0 py-1 overflow-auto">
                         <div class="table-responsive">
@@ -48,7 +47,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for x in list_pelajaran %}
+                                    {% for x in list_pengajar %}
                                     <tr>
                                         <td class="col-auto text-center">
                                             <p class=" mb-0">{{forloop.counter}}</p>
@@ -71,7 +70,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+           
         </div>
         <script src="{% static 'assets/extensions/jquery/jquery.min.js' %}"></script>
         <script src="{% static 'assets/extensions/datatables.net/js/jquery.dataTables.min.js' %}"></script>

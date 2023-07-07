@@ -45,8 +45,7 @@
                                       <div class="d-flex align-items-center mb-2"> <!-- Menambahkan mb-2 untuk memberikan jarak antara foto -->
                                         <div class="avatar">
                                           <img src="{{ user_list.id_user.profile_pic }}">
-                                          <span class="avatar-status bg-{%if user_list.id_user.is_login%}success{%else%}danger{%endif%}"></span>
-                                        </div>
+                                          </div>
                                         <p class="font-bold ms-3 mb-0">{{ user_list.id_user.nama_lengkap}}</p>
                                       </div>
                                     {% endif %}

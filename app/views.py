@@ -90,13 +90,13 @@ def tugas_siswa(request):
     result = TugasUser.objects.filter(id_user=data.id_user).order_by('-id_tugas__created_tugas')
     for x in result:
         if x.status_tugas == 0:
-            x.status_tugas,x.bg = 'Belum Selesai','secondary'
+            x.status_tugas,x.bg = 'Belum Selesai','light-secondary'
         elif x.status_tugas == 1:
-            x.status_tugas,x.bg = 'Selesai','success'
+            x.status_tugas,x.bg = 'Selesai','light-success'
         elif x.status_tugas == 2:
-            x.status_tugas,x.bg = 'Proses','warning'
+            x.status_tugas,x.bg = 'Proses','light-warning'
         else:
-            x.status_tugas,x.bg = 'Error','error'
+            x.status_tugas,x.bg = 'Error','light-error'
 
     ddStatus = [
         {'key':0,'value':'Belum Selesai'},
@@ -111,6 +111,20 @@ def tugas_siswa(request):
         TugasUser.objects.filter(id_user=data.id_user,id_tugas=idTugas).update(status_tugas=status,catatan_user=note)
         return redirect('/tugas')
     return render(request,'siswa/tugas-siswa.html',{'data':result,'ddstatus':ddStatus})
+
+@login_required(login_url=url_login)
+@role_required('siswa')
+def detail_tugas(request,id_tugas):
+    data = request.user
+    tugas=TugasUser.objects.filter(id_user=data.id_user,id_tugas=id_tugas)
+        
+    return render(request,'siswa/detail-tugas.html',{'id_tugas':id_tugas,'dataTugas':tugas})
+
+@login_required(login_url=url_login)
+@role_required('siswa')
+def notifikasi_siswa(request):
+    data = request.user
+    return render(request,'siswa/notifikasi-siswa.html',{'data':data})
 
 
 # ganti password / ubah password
@@ -160,13 +174,13 @@ def pengaturan_siswa_umum(request):
             datas = response.json()
 
             if datas['success']:
-                image = datas['data']['image']['url']
+                image = datas['data']['thumb']['url']
                 UserData.objects.filter(id_user=data.id_user).update(
                     profile_pic=image,
                     username = username,
                     email = email,
                     nama_lengkap = nama_lengkap) 
-                return redirect('/pengaturan-umum')
+                return redirect('pengaturan-siswa')
             else:
                 
                 return render(request, 'siswa/pengaturan_umum.html', {'error_message': 'Terjadi kesalahan saat memperbarui data.'})
@@ -175,15 +189,15 @@ def pengaturan_siswa_umum(request):
                 username = username,
                 email = email,
                 nama_lengkap = nama_lengkap)
-            return redirect('/pengaturan-umum')
+            return redirect('pengaturan-siswa')
     return render(request,'siswa/pengaturan-umum.html',{'data':data})
 
 # list pelajaran / list guru
 @login_required(login_url=url_login)
 @role_required('siswa')
-def list_pelajaran(request):
-    list_pelajaran = Pelajaran.objects.all()
-    return render(request,'siswa/list-pelajaran.html',{'list_pelajaran':list_pelajaran})
+def list_pengajar(request):
+    list_pengajar = Pelajaran.objects.all()
+    return render(request,'siswa/list-pengajar.html',{'list_pengajar':list_pengajar})
 
 # kas siswa
 @login_required(login_url=url_login)
