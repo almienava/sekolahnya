@@ -40,7 +40,7 @@
                                 <h4 class="text-center">{{ hari|title }}</h4>
                                 <hr class="mt-0">
                                 <div class="mb-3 text-align">
-                                    {% for user_list in jadwal_piket %}
+                                    {% for user_list in data %}
                                     {% if hari in user_list.hari %}
                                     <a href="/profile/{{user_list.id_user.username}}" style="text-decoration: none;  color: inherit;">
                                       <div class="d-flex align-items-center mb-2"> <!-- Menambahkan mb-2 untuk memberikan jarak antara foto -->

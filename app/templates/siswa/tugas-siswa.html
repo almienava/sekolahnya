@@ -129,7 +129,7 @@
                                                             <label for="status-tugas">Status Tugas</label>
                                                             <select id="statusTugas" class="form-control" name="statusTugas">
                                                                 {% for i in ddstatus%}
-                                                                {% if i.value == x.status_tugas%}
+                                                                {% if i.key == x.status_tugas%}
                                                                 <option value="{{i.key}}" selected>{{i.value}}</option>
                                                                 {%else%}
                                                                 <option value="{{i.key}}">{{i.value}}</option>
