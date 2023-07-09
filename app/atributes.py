@@ -20,7 +20,7 @@ menu_siswa={
     'kas': {'url': f'/kas/', 'icon': 'bi bi-wallet-fill', 'text': 'Kas Kelas'},
     'boarding': {'url': '/boarding/', 'icon': 'bi bi-easel-fill', 'text': 'Boarding Kelas'},
     'list-pengajar': {'url': '/list-pengajar', 'icon': 'bi bi-person-lines-fill', 'text': 'List Pengajar'},
-    'setting': {'url': '/', 'icon': 'bi bi-gear-fill', 'text': 'Pengaturan','submenu':[{'title':'Umum','link':'/pengaturan-umum'},{'title':'Ubah Password','link':'/ubah-password'}]}, 
+    'setting': {'url': '/', 'icon': 'settings', 'text': 'Pengaturan','submenu':[{'title':'Umum','link':'/pengaturan-umum'},{'title':'Ubah Password','link':'/ubah-password'}]}, 
     'logout': {'url': '/logout', 'icon': 'bi bi-box-arrow-left', 'text': 'Logout'}, 
     }
 

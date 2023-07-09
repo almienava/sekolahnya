@@ -64,7 +64,11 @@
                                             <p class=" mb-0">{{x.id_tugas.end_date}}</p>
                                         </td>
                                         <td class="col-auto text-center">
-                                            <span class="badge bg-{{x.bg}}">{{x.status_tugas}}</span>
+                                            {% for stat in ddstatus%}
+                                            {% if stat.key == x.status_tugas %}
+                                            <span class="badge bg-{{stat.bg}}">{{stat.value}}</span>
+                                            {% endif %}
+                                            {%endfor%}
                                         </td>
                                         <td class="col-auto text-center">
                                             <button type="button" class="btn btn-outline-primary m-1"

@@ -1,6 +1,6 @@
 from django.urls import path
 from app import views,auth,api
-
+from app.auth import LoginUser,DaftarAkun
 
 urlpatterns = [
     #  =========================================================================
@@ -12,15 +12,18 @@ urlpatterns = [
     path('list-pengajar', views.list_pengajar, name='list-pengajar-siswa'),
     path('my-profile', views.profile_siswa, name='profile-siswa'),
     path('profile/<str:username_user>', views.profile_user, name='profile-user'),
+
     path('tugas', views.tugas_siswa, name='tugas-siswa'),
-    path('tugas/<str:id_tugas>', views.detail_tugas, name='detail-tugas-siswa'),
+
     path('ubah-password', views.ganti_password, name='ganti-pas-siswa'),
     path('pengaturan-umum', views.pengaturan_siswa_umum, name='pengaturan-siswa'),
-    path('notifikasi', views.notifikasi_siswa, name='notifikasi-siswa'),
-    
-
+    path('notifikasi/', views.notifikasi_siswa, name='notifikasi-siswa'),
+    path('load-more-siswa/', views.loadmore_notif_siswa, name='load_more_notif_siswa'),
     path('kas/', views.kas_siswa, name='kas-siswa'),
-    path('login', auth.login_user, name='login'),
+
+    path('login', LoginUser.as_view(), name='login'),
+    path('boarding/', views.boarding_siswa, name='boarding-siswa'),
+
     
 
     #  =========================================================================
@@ -37,6 +40,6 @@ urlpatterns = [
     path('api/column-kas/', api.api_column_kas, name='api_column_kas'),
 
 
-    path('register-siswa/', auth.register_siswa, name='register-siswa'),
+    path('register-siswa/',DaftarAkun.as_view(), name='register-siswa'),
     
 ]

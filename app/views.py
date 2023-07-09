@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from .auth import role_required
 import datetime
 from .models import *
-from django.views.decorators.cache import cache_page
 from datetime import datetime, timedelta
 from django.contrib import messages
 import requests
 from django.contrib.auth.hashers import check_password,make_password
 from django.db.models import Sum,Q
+from django.utils import timezone
+from django.views import View
 
 url_login = '/login'
 
@@ -36,7 +36,6 @@ def get_hari_ini():
     }
     return hari_indonesia.get(hari_ini, '')
 
-@login_required(login_url=url_login)
 def kas_data(request):
     data_kas = Kas.objects.filter(id_kelas=request.user.id_kelas)
     total_nominals = data_kas.aggregate(total=Sum('nominal'))['total']   
@@ -63,11 +62,13 @@ def dashboard_siswa(request):
     tugas_selesai = tugas.filter(Q(status_tugas=1)).count()
     tugas_ = tugas.filter(Q(status_tugas=0))|tugas.filter(status_tugas=2)
     tugas_tersedia = tugas_.count()
+
+    notif = Notifikasi_user.objects.filter(status_buka = False,id_user=user.id_user).count()
     return render(request, 'siswa/dashboard-siswa.html',
                    {'hari_ini': hari_ini,
                     'piket':piket,'jadwal_pelajaran':jadwal_pelajaran,
                     'total_kas':kas_data(request)[1],'tugas_selesai':tugas_selesai,
-                    'tugas_tersedia':tugas_tersedia})
+                    'tugas_tersedia':tugas_tersedia,'count_notif':notif})
 
 
 # jadwal piket siswa
@@ -103,26 +104,36 @@ def profile_user(request,username_user):
     return render(request,'siswa/profile-user.html',{'data':users})
 
 
-# tugas siswa
+
+class TugasSiswa(View):
+    def get(self,request):
+        self.data = request.user
+        self.TugasModel = TugasUser.objects.filter(id_user=self.data.id_user)
+        TugasData = self.TugasModel.order_by('-id_tugas__created_tugas')
+        ddStatus = [
+        {'key':0,'value':'Belum Selesai','bg':'light-secondary'},
+        {'key':1,'value':'Selesai','bg':'light-success'},
+        {'key':2,'value':'Proses','bg':'light-warning'}]
+
+        return render(request,'siswa/tugas-siswa.html',{'data':TugasData,'ddstatus':ddStatus})
+
+    def post(self, request):
+        status = request.POST.get('statusTugas')
+        note = request.POST.get('catatan')
+        idTugas = request.POST.get('idTugas')
+
+        self.TugasModel.objects.filter(id_tugas=idTugas).update(status_tugas=status,catatan_user=note)
+        return redirect('tugas-siswa')
+    
 @login_required(login_url=url_login)
 @role_required('siswa')
 def tugas_siswa(request):
     data = request.user
     result = TugasUser.objects.filter(id_user=data.id_user).order_by('-id_tugas__created_tugas')
-    for x in result:
-        if x.status_tugas == 0:
-            x.status_tugas,x.bg = 'Belum Selesai','light-secondary'
-        elif x.status_tugas == 1:
-            x.status_tugas,x.bg = 'Selesai','light-success'
-        elif x.status_tugas == 2:
-            x.status_tugas,x.bg = 'Proses','light-warning'
-        else:
-            x.status_tugas,x.bg = 'Error','light-error'
-
     ddStatus = [
-        {'key':0,'value':'Belum Selesai'},
-        {'key':1,'value':'Selesai'},
-        {'key':2,'value':'Proses'}]
+        {'key':0,'value':'Belum Selesai','bg':'light-secondary'},
+        {'key':1,'value':'Selesai','bg':'light-success'},
+        {'key':2,'value':'Proses','bg':'light-warning'}]
     
     if request.method == 'POST':
         status = request.POST.get('statusTugas')
@@ -133,19 +144,53 @@ def tugas_siswa(request):
         return redirect('/tugas')
     return render(request,'siswa/tugas-siswa.html',{'data':result,'ddstatus':ddStatus})
 
+
+
+
+def data_notif(request):
+    notif = Notifikasi_user.objects.filter(id_user=request.user.id_user).order_by('-id_notifikasi__created_at')
+    isi = []
+    for x in notif:
+        created_at = x.id_notifikasi.created_at
+        now = timezone.now()
+        selisih = now - created_at
+        if selisih < timedelta(minutes=1):
+            waktu_lalu = 'Baru saja'
+        elif selisih < timedelta(hours=1):
+            waktu_lalu = f'{selisih.seconds // 60} menit lalu'
+        elif selisih < timedelta(days=1):
+            waktu_lalu = f'{selisih.seconds // 3600} jam lalu'
+        elif selisih < timedelta(days=7):
+            waktu_lalu = f'{selisih.days} hari lalu'
+        elif selisih < timedelta(days=31):
+            waktu_lalu = f'{selisih.days // 7} minggu lalu'
+        else:
+            waktu_lalu = f'{selisih.days // 31} bulan lalu'
+        x.id_notifikasi.created_at = waktu_lalu
+        isi.append(x)
+    return isi,notif
+
 @login_required(login_url=url_login)
 @role_required('siswa')
-def detail_tugas(request,id_tugas):
-    data = request.user
-    tugas=TugasUser.objects.filter(id_user=data.id_user,id_tugas=id_tugas)
-        
-    return render(request,'siswa/detail-tugas.html',{'id_tugas':id_tugas,'dataTugas':tugas})
+def loadmore_notif_siswa(request):
+    offset = int(request.GET.get('offset', 0))
+    limit = 5
+    notif = data_notif(request)[0][offset:offset+limit]
+    return render(request, 'siswa/notifikasi/load-more.html',{'notif':notif})
 
 @login_required(login_url=url_login)
 @role_required('siswa')
 def notifikasi_siswa(request):
-    data = request.user
-    return render(request,'siswa/notifikasi-siswa.html',{'data':data})
+    notif = data_notif(request)[1]
+    notif_filter = notif.filter(status_buka=False).count()
+    count = 10
+    isi = data_notif(request)[0]
+    if notif_filter > 10 :
+        count = notif_filter
+    notif_ = isi[:count]
+    
+    notif.update(status_buka=True)
+    return render(request,'siswa/notifikasi/notifikasi-siswa.html',{'notif':notif_})
 
 
 # ganti password / ubah password
@@ -266,6 +311,13 @@ def kas_siswa(request):
                                                     'month':months,
                                                     'total_kas':data_kas[1],
                                                     'header':header})
+
+
+@login_required(login_url=url_login)
+@role_required('siswa')
+def boarding_siswa(request):
+    data = request.user
+    return render(request, 'siswa/boarding.html')
 
 
 

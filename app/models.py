@@ -116,7 +116,7 @@ class Notifikasi(models.Model):
 
 class Notifikasi_user(models.Model):
     id_notifikasi = models.ForeignKey(Notifikasi,on_delete=models.CASCADE,db_column='id_notifikasi')
-    id_user = models.ForeignKey(UserData,on_delete=models.CASCADE)
+    id_user = models.ForeignKey(UserData,on_delete=models.CASCADE,db_column='id_user')
     status_buka = models.BooleanField(default=False)
 
 

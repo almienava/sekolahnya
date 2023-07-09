@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'assets/css/widgets/chat.css' %}">
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Chatbox</h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Chatbox</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="page-content">
+    <section class="section">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="media d-flex align-items-center">
+                            <div class="name flex-grow-1">
+                                <h6 class="mb-0">BOARDING KELAS</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chat-content">
+                            <div class="chat">
+                                <div class="chat-body">
+                                    <div class="chat-message">
+                                        <div class="d-flex align-items-start">
+                                            <div class="avatar avatar-lg me-3">
+                                                <img src="https://i.ibb.co/7gRgWnC/idc2-frame-b451fb0b-a82c-45c5-9dab-26ac81568362.jpg" alt="avatar">
+                                            </div>
+                                            <div class="d-flex w-100">
+                                                <div>
+                                                    <p class="mb-1" style="font-size: 14px;">
+                                                        <b>Haldad Almi</b>
+                                                    </p>
+                                                    <small style="font-size: 14px;">Kepada Seluruh siswa besok libur</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="message-form d-flex flex-direction-column align-items-center">
+                            <div class="d-flex flex-grow-1 me-2">
+                                <input type="text" class="form-control" placeholder="Type your message..">
+                            </div>
+                            <a href="#" class="me-3"><i data-feather="paperclip"></i></a>
+                            <a href="#"><i data-feather="send"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+{% endblock content %}

@@ -32,7 +32,12 @@
         <li class="sidebar-item 
         {% if active_menu in menu.url %} active {% elif menu.url|length < 2 %} has-sub{% endif %}">
           <a href="{{menu.url}}" class="sidebar-link">
+            {% if menu.url|length < 2 %}
+            <i data-feather="settings" style="width: 17px; height: 17px;"></i>
+
+            {%else%}
             <i class="{{menu.icon}}"></i>
+            {%endif%}
             <span>{{menu.text}}</span>
           </a>
 

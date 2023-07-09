@@ -7,6 +7,7 @@ from .models import UserData
 from functools import wraps
 from django.contrib import messages
 from django.http import HttpResponseForbidden
+from django.views import View
 
 def role_required(allowed_roles):
     def decorator(view_func):
@@ -20,46 +21,45 @@ def role_required(allowed_roles):
 
 
 
-def login_user(request):
-    if request.user.is_authenticated:
-        if request.user.role == 'siswa':
-            return redirect('/dashboard-siswa')
-        elif request.user.role == 'guru':
-            return redirect('/dashboard-guru')
-    else:
-        if request.method == 'POST':
-            email = request.POST['email']
-            password = request.POST['password']
-            user = authenticate(request, email=email, password=password)
-            if user is not None:
-                login(request, user)
-                user.is_login = True
-                user.save()
-                messages.success(request, 'Login Berhasil')
-                return redirect('login')
-            else:
-                messages.error(request, 'Login Gagal')
-                return render(request, 'auth/login.html', {'title': 'Login'})
+class LoginUser(View):
+    def get(self,request):
+        if request.user.is_authenticated:
+            if request.user.role == 'siswa':
+                return redirect('/dashboard-siswa')
+            elif request.user.role == 'guru':
+                return redirect('/dashboard-guru')
         else:
             return render(request, 'auth/login.html',{'title': 'Login','site_name':'Cryptos.com'})
-
-
-
-def register_siswa(request):
-    if request.user.is_authenticated:
-        return redirect('/dashboard-siswa')
-    else:
-        if request.method == 'POST':
-            username = request.POST['username']
-            password = request.POST['password']
-            email = request.POST['email']
-            fullname = request.POST['fullname']
-            phone = request.POST['phone']
-            user = UserData.objects.create_user(nama_lengkap=fullname, username=username, email=email, no_hp=phone, password=password,role='siswa')
+    def post(self, request):
+        email = request.POST['email']
+        password = request.POST['password']
+        user = authenticate(request, email=email, password=password)
+        if user is not None:
+            login(request, user)
+            user.is_login = True
+            user.save()
+            messages.success(request, 'Login Berhasil')
             return redirect('login')
         else:
-            return render(request, 'siswa/auth/register-siswa.html',{'title': 'Register','site_name':'Cryptos.com'})
-        
+            messages.error(request, 'Login Gagal')
+            return render(request, 'auth/login.html', {'title': 'Login'})
+
+
+class DaftarAkun(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            return redirect(f'/dashboard-{request.user.role}')    
+        return render(request, 'siswa/auth/register-siswa.html',{'title': 'Register','site_name':'Cryptos.com'})
+
+    def post(self, request):
+        username = request.POST['username']
+        password = request.POST['password']
+        email = request.POST['email']
+        fullname = request.POST['fullname']
+        phone = request.POST['phone']
+        user = UserData.objects.create_user(nama_lengkap=fullname, username=username, email=email, no_hp=phone, password=password,role='siswa')
+        return redirect('login')
+
 
 @login_required
 def logout_view(request):
