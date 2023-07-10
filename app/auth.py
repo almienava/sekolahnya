@@ -29,7 +29,7 @@ class LoginUser(View):
             elif request.user.role == 'guru':
                 return redirect('/dashboard-guru')
         else:
-            return render(request, 'auth/login.html',{'title': 'Login','site_name':'Cryptos.com'})
+            return render(request, 'auth/login.html',{'title': 'Login','site_name':''})
     def post(self, request):
         email = request.POST['email']
         password = request.POST['password']

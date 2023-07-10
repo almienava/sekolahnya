@@ -51,4 +51,15 @@ $(document).ready(function() {
         ]
     });
     
+    var table_histori_transaksi = $('#table-histori-transaksi').DataTable({
+        responsive: true,
+        "bScrollInfinite": true,
+        "bScrollCollapse": true,
+        "scrollY": "250px",
+        columnDefs: [
+            { targets: 0, responsivePriority: 1 },
+            { targets: 2, responsivePriority: 2 },
+
+        ]
+    });
 });

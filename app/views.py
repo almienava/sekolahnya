@@ -11,7 +11,8 @@ import requests
 from django.contrib.auth.hashers import check_password,make_password
 from django.db.models import Sum,Q
 from django.utils import timezone
-from django.views import View
+from django.views.generic.base import View,TemplateView
+
 
 url_login = '/login'
 
@@ -40,11 +41,7 @@ def get_hari_ini():
     
     return hari_indonesia.get(hari_ini, '')
 
-def kas_data(request):
-    data_kas = Kas.objects.filter(id_kelas=request.user.id_kelas)
-    total_nominals = data_kas.aggregate(total=Sum('nominal'))['total']   
-    total_nominal = "{:,.0f}".format(total_nominals).replace(",", ".")
-    return data_kas,total_nominal
+
 
 
 
@@ -103,11 +100,13 @@ class FiturSiswa(View):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.data = None
+
     def dispatch(self, request, *args, **kwargs):
             self.data = request.user
             self.notifModels = Notifikasi_user.objects.filter(id_user=self.data.id_user).order_by('-id_notifikasi__created_at')
 
             return super().dispatch(request, *args, **kwargs)
+    
     @method_decorator(login_required(login_url=url_login))
     @method_decorator(role_required('siswa'))
     def get(self, request):
@@ -193,6 +192,98 @@ class TugasSiswa(View):
         return redirect('tugas-siswa')
     
 
+def kas_data(request):
+    data_kas = Kas.objects.filter(id_kelas=request.user.id_kelas)
+    total_nominals = data_kas.aggregate(total=Sum('nominal'))['total']   
+    total_nominal = "{:,.0f}".format(total_nominals).replace(",", ".")
+    return total_nominal
+
+
+# 1 pemasukan,0 pengeluaran
+class KasSiswa(View):
+    months = {
+                    "01": "Januari",
+                    "02": "Februari",
+                    "03": "Maret",
+                    "04": "April",
+                    "05": "Mei",
+                    "06": "Juni",
+                    "07": "Juli",
+                    "08": "Augustus",
+                    "09": "September",
+                    "10": "Oktober",
+                    "11": "November",
+                    "12": "Desember"}
+    path_html = 'siswa/kas-siswa.html'
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.data = None
+        self.data_kas = None
+    def dispatch(self, request, *args, **kwargs):
+            self.data = request.user
+            self.data_kas = Kas.objects.filter(id_kelas=self.data.id_kelas)
+            total_nominals = self.data_kas.aggregate(total=Sum('nominal'))['total']   
+            self.total_nominal = "{:,.0f}".format(total_nominals).replace(",", ".")
+            self.histori_transaksi = HistoriTransaksiKas.objects.filter(id_kelas = self.data.id_kelas).order_by('-tanggal_histori')
+            self.month = request.GET.get('month')
+            self.year = request.GET.get('year')
+            if self.month is None and self.year is None:
+                current_date = datetime.now()
+                self.month = current_date.strftime('%m')
+                self.year = current_date.strftime('%Y')
+            return super().dispatch(request, *args, **kwargs)
+
+    @method_decorator(login_required(login_url=url_login))
+    @method_decorator(role_required('siswa'))
+    def get(self,request):
+        date_string = f"{self.year}-{self.month}-01"
+        date = datetime.strptime(date_string, '%Y-%m-%d').date()
+        while date.weekday() != 0:  
+            date += timedelta(days=1)
+        column_dates = []
+        while date.strftime('%m') == self.month:
+            column_dates.append(date.strftime('%Y-%m-%d'))
+            date += timedelta(days=7)  # Lanjut ke hari Senin berikutnya
+
+        header = self.months.get(self.month,'')
+        header = f"{header} {self.year}"
+        data_kas_filter = self.data_kas.filter(yearmonth=f'{self.year}{self.month}')
+        context={'column_dates':column_dates,'isi':data_kas_filter,
+                    'month':self.months,'total_kas':self.total_nominal,
+                    'header':header,'histori':self.histori_transaksi,'nominals':5000}
+        return render(request, self.path_html,context)
+    @method_decorator(login_required(login_url=url_login))
+    @method_decorator(role_required('siswa'))
+    def post(self,request):
+        pembayaran = request.POST.get('pembayaran')
+        # nominal = request.POST.get('NominalKas')
+        aksi = request.POST.get('aksi')
+        idUser = request.POST.get('idUser')
+        kas = self.data_kas.filter(id_user = idUser,yearmonth=f'{self.year}{self.month}')
+        value = True
+        jenis_ ,deskripsi_= 1,'Bayar Kas'
+        if aksi =='reset':
+            value=False
+            jenis_,deskripsi_ = 0,'Salah Input'
+
+        if pembayaran == 'w1':
+            kas.update(w1=value,w1_dtm=datetime.now())
+        elif pembayaran == 'w2':
+            kas.update(w2=value,w2_dtm=datetime.now())
+        elif pembayaran == 'w3':
+            kas.update(w3=value,w3_dtm=datetime.now())
+        elif pembayaran == 'w4':
+            kas.update(w4=value,w4_dtm=datetime.now())
+        elif pembayaran == 'w5':
+            kas.update(w5=value,w5_dtm=datetime.now())
+        userdata = UserData.objects.get(id_user=idUser)
+        HistoriTransaksiKas.create_histori(id_user=userdata, id_kelas=self.data.id_kelas,
+                                                      deskripsi=deskripsi_, jenis=jenis_, nominal=5000)
+        return redirect('kas-siswa')
+
+        
+
+
 
 
 
@@ -261,53 +352,6 @@ def pengaturan_siswa_umum(request):
             return redirect('pengaturan-siswa')
     return render(request,'siswa/pengaturan-umum.html',{'data':data})
 
-
-# kas siswa
-@login_required(login_url=url_login)
-@role_required('siswa')
-def kas_siswa(request):
-    months = {
-                "01": "Januari",
-                "02": "Februari",
-                "03": "Maret",
-                "04": "April",
-                "05": "Mei",
-                "06": "Juni",
-                "07": "Juli",
-                "08": "Augustus",
-                "09": "September",
-                "10": "Oktober",
-                "11": "November",
-                "12": "Desember"}
-
-    month = request.GET.get('month')
-    year = request.GET.get('year')
-
-    if month is None and year is None:
-        current_date = datetime.now()
-        month = current_date.strftime('%m')
-        year = current_date.strftime('%Y')
-        
-    date_string = f"{year}-{month}-01"
-    date = datetime.strptime(date_string, '%Y-%m-%d').date()
-
-
-    while date.weekday() != 0:  
-        date += timedelta(days=1)
-    column_dates = []
-    while date.strftime('%m') == month:
-        column_dates.append(date.strftime('%Y-%m-%d'))
-        date += timedelta(days=7)  # Lanjut ke hari Senin berikutnya
-
-    header = months.get(month,'')
-    header = f"{header} {year}"
-    data_kas = kas_data(request)
-
-    return render(request, 'siswa/kas-siswa.html',{'column_dates':column_dates,
-                                                    'isi':data_kas[0],
-                                                    'month':months,
-                                                    'total_kas':data_kas[1],
-                                                    'header':header})
 
 
 @login_required(login_url=url_login)

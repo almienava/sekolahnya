@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.conf import settings
 import uuid
-
+from datetime import datetime
 
 
 class CustomUserManager(BaseUserManager):
@@ -69,6 +69,21 @@ class Kas(models.Model):
     w5_dtm = models.DateTimeField()
     yearmonth = models.BigIntegerField(null=True)
 
+class HistoriTransaksiKas(models.Model):
+    id_historiKas = models.AutoField(primary_key=True)
+    id_user = models.ForeignKey(UserData, on_delete=models.CASCADE,null=True,db_column='id_user')
+    id_kelas = models.ForeignKey(Kelas, on_delete=models.CASCADE,null=True,db_column='id_kelas')
+    deskripsi = models.TextField(null=True)
+    jenis = models.SmallIntegerField(default=1)
+    nominal = models.BigIntegerField(null=True,db_column='nominal')
+    tanggal_histori = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def create_histori(cls,id_user,id_kelas,deskripsi,jenis,nominal):
+        histori = cls(id_user=id_user,id_kelas=id_kelas,deskripsi=deskripsi,jenis=jenis,nominal=nominal)
+        histori.save()
+        return True
+        
 
 class Pelajaran(models.Model):
     id_pelajaran = models.AutoField(primary_key=True)
@@ -100,7 +115,7 @@ class Tugas(models.Model):
 class TugasUser(models.Model):
     id_tugas = models.ForeignKey(Tugas,on_delete=models.CASCADE,db_column='id_tugas')
     catatan_user = models.TextField(null=True,blank=True)
-    status_tugas = models.IntegerField(default =0)
+    status_tugas = models.SmallIntegerField(default =0)
     path_tugas = models.TextField(null=True)
     update_at = models.DateTimeField(auto_now_add=True)
     id_user = models.ForeignKey(UserData,on_delete=models.CASCADE,db_column='id_user',null=True)

@@ -1,7 +1,7 @@
 from django.urls import path
 from app import views,auth,api
 from app.auth import LoginUser,DaftarAkun
-from app.views import TugasSiswa,FiturSiswa
+from app.views import TugasSiswa,FiturSiswa,KasSiswa
 
 urlpatterns = [
     #  =========================================================================
@@ -18,7 +18,7 @@ urlpatterns = [
     path('pengaturan-umum', views.pengaturan_siswa_umum, name='pengaturan-siswa'),
     path('notifikasi/', FiturSiswa.as_view(nama='notifikasi-siswa'), name='notifikasi-siswa'),
     path('load-more-siswa/', FiturSiswa.as_view(nama='load-more'), name='load_more_notif_siswa'),
-    path('kas/', views.kas_siswa, name='kas-siswa'),
+    path('kas/', KasSiswa.as_view(), name='kas-siswa'),
 
     path('login', LoginUser.as_view(), name='login'),
     path('boarding/', views.boarding_siswa, name='boarding-siswa'),
