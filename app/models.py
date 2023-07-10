@@ -16,8 +16,6 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-
-
 class UserData(AbstractBaseUser):
     id_user = models.CharField(primary_key=True, default=uuid.uuid4, editable=False)
     nis = models.BigIntegerField(null=True)
@@ -98,8 +96,6 @@ class JadwalPelajaran(models.Model):
     id_pelajaran = models.ForeignKey(Pelajaran, on_delete=models.CASCADE,null=True,db_column='id_pelajaran') 
     id_kelas = models.ForeignKey(Kelas, on_delete=models.CASCADE,null=True,db_column='id_kelas')
 
-
-
 class Tugas(models.Model):
     id_tugas = models.CharField(primary_key=True, default=uuid.uuid4, editable=False,db_column='id_tugas')
     id_pelajaran = models.ForeignKey(Pelajaran, on_delete=models.CASCADE,null=True,db_column='id_pelajaran') 
@@ -111,7 +107,6 @@ class Tugas(models.Model):
     end_date = models.DateField(null=True)
     created_tugas =models.DateTimeField(auto_now_add=True)
 
-
 class TugasUser(models.Model):
     id_tugas = models.ForeignKey(Tugas,on_delete=models.CASCADE,db_column='id_tugas')
     catatan_user = models.TextField(null=True,blank=True)
@@ -120,7 +115,6 @@ class TugasUser(models.Model):
     update_at = models.DateTimeField(auto_now_add=True)
     id_user = models.ForeignKey(UserData,on_delete=models.CASCADE,db_column='id_user',null=True)
 
-
 class Notifikasi(models.Model):
     id_notifikasi = models.AutoField(primary_key=True)
     type_notif = models.CharField(max_length=255)
@@ -128,12 +122,18 @@ class Notifikasi(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     id_kelas = models.ForeignKey(Kelas,on_delete=models.CASCADE,null=True,db_column='id_kelas')
 
-
 class Notifikasi_user(models.Model):
     id_notifikasi = models.ForeignKey(Notifikasi,on_delete=models.CASCADE,db_column='id_notifikasi')
     id_user = models.ForeignKey(UserData,on_delete=models.CASCADE,db_column='id_user')
     status_buka = models.BooleanField(default=False)
 
+class BoardingKelas(models.Model):
+    id_boarding = models.AutoField(primary_key=True)
+    pesan = models.TextField(null=True)
+    path_file = models.TextField(null=True)
+    pengirim = models.ForeignKey(UserData,on_delete=models.CASCADE,db_column='pengirim')
+    id_kelas = models.ForeignKey(Kelas,on_delete=models.CASCADE,null=True,db_column='id_kelas')
+    created_at = models.DateTimeField(auto_now_add=True)
 
 # class DepositMethod(models.Model):
 #     method_id = models.AutoField(primary_key=True)

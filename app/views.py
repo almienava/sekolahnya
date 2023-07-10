@@ -96,7 +96,7 @@ def filter_waktu(notif):
 
 class FiturSiswa(View):
     nama = None
-    limit = 10
+    limit = 25
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.data = None
@@ -358,9 +358,19 @@ def pengaturan_siswa_umum(request):
 @role_required('siswa')
 def boarding_siswa(request):
     data = request.user
-    return render(request, 'siswa/boarding.html')
+    isi = BoardingKelas.objects.filter(id_kelas=data.id_kelas).order_by('-id_boarding')[:50]
+    return render(request, 'siswa/boarding.html',{'isi':isi})
 
-
+@login_required(login_url=url_login)
+@role_required('siswa')
+def load_more_boarding(request):
+    data = request.user
+    offset = request.GET.get('offset', 50)
+    offset = int(offset)
+    limit = int(request.GET.get('limit', 50))
+    isi = BoardingKelas.objects.filter(id_kelas=data.id_kelas).order_by('-id_boarding')[offset:offset+limit]
+    return render(request, 'siswa/load-boarding.html',{'offset':offset,'isi':isi})
+    
 
 # BAGIAN GURU
 @login_required(login_url=url_login)

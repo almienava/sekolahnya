@@ -22,6 +22,8 @@ urlpatterns = [
 
     path('login', LoginUser.as_view(), name='login'),
     path('boarding/', views.boarding_siswa, name='boarding-siswa'),
+    path('load-boarding/', views.load_more_boarding, name='load-boarding-siswa'),
+
 
     
 

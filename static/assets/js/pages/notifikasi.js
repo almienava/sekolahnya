@@ -1,6 +1,6 @@
 $(document).ready(function() {
-    var offset = 10;
-    var limit = 5;
+    var offset = 0;
+    var limit = 25;
     var loading = false;
 
     function loadMore() {
