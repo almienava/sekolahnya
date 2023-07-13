@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'assets/css/widgets/chat.css' %}">
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Chatbox</h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Chatbox</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="page-content">
+    <section class="section">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="media d-flex align-items-center">
+                            <div class="name flex-grow-1">
+                                <h6 class="mb-0">BOARDING KELAS</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <form>
+                    <div class="card-body">
+                        <div class="chat-content" style="overflow: auto; height: 300px;">
+                            <div class="chat">
+                                {% for chat_message in isi reversed %}
+                                <div class="chat-body">
+                                    <div class="chat-message mb-5">
+                                        <div class="d-flex align-items-start">
+                                            <div class="avatar avatar-md me-3">
+                                                <img src="{{ chat_message.pengirim.profile_pic }}" alt="avatar">
+                                            </div>
+                                            <div class="d-flex w-100" style="margin-top: -5px;">
+                                                <div>
+                                                    <p class="mb-1" style="font-size: 14px;">
+                                                        <b>{{ chat_message.pengirim.nama_lengkap }}</b>
+                                                    </p>
+                                                    <small style="font-size: 14px;">{{ chat_message.pesan }}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="message-form d-flex flex-direction-column align-items-center">
+                            <div class="d-flex flex-grow-1 me-2">
+                                <textarea class="form-control" rows="2" id="my_input" placeholder="Type your message.."></textarea>
+                            </div>
+                            <a href="#" class="me-3"><i data-feather="paperclip"></i></a>
+                            <a href="#" id="submit_button"><i data-feather="send"></i></a>
+                        </div>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+ $(document).ready(function() {
+    var limit = 50;
+    var loading = false;
+    var offset = 50;
+    var containerHeight = $('.chat-content').outerHeight();
+    var contentHeight = $('.chat-content')[0].scrollHeight;
+
+    $('.chat-content').scrollTop(contentHeight); // Mengatur scroll ke posisi paling bawah saat membuka halaman
+
+    $('.chat-content').scroll(function() {
+        var scrollPosition = $(this).scrollTop();
+
+        if (scrollPosition === 0 && !loading) {
+            loading = true;
+            $.ajax({
+                url: '/load-boarding/',
+                type: 'GET',
+                data: {
+                    offset: offset,
+                    limit: limit
+                },
+                success: function(response) {
+                    var chatContainer = $('.chat');
+                    var scrollOffset = chatContainer[0].scrollHeight - chatContainer.scrollTop();
+                    chatContainer.prepend(response);
+
+                    setTimeout(function() {
+                        chatContainer.scrollTop(chatContainer[0].scrollHeight - scrollOffset);
+                        offset += limit;
+                        loading = false;
+                    }, 100);
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                    loading = false;
+                }
+            });
+        }
+    });
+
+    const ChatSocket = new WebSocket("ws://" + window.location.host + "/ws/boarding/");
+    chatSocket.onopen = function (e) {
+      console.log("The connection was setup successfully !");
+    };
+    chatSocket.onclose = function (e) {
+      console.log("Something unexpected happened !");
+    };
+
+    document.querySelector("#my_input").focus();
+    document.querySelector("#my_input").onkeyup = function (e) {
+      if (e.keyCode == 13) {
+        e.preventDefault();
+        document.querySelector("#submit_button").click();
+      }
+    };
+    document.querySelector("#submit_button").onclick = function (e) {
+      var messageInput = document.querySelector(
+        "#my_input"
+      ).value;
+
+      if(messageInput.length == 0)
+        {
+            alert("Add some Input First Or Press Send Button!")
+        }
+        else
+        {
+          chatSocket.send(JSON.stringify({ message: messageInput, id_user : "{{request.user.id_user}}",id_kelas:"{{request.user.id_kelas}}"}));
+          
+         
+        }
+      
+    };
+
+});
+
+
+
+</script>
+
+
+{% endblock content %}

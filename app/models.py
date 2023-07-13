@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.conf import settings
 import uuid
 from datetime import datetime
+from django.shortcuts import get_object_or_404
 
 
 class CustomUserManager(BaseUserManager):
@@ -78,7 +79,10 @@ class HistoriTransaksiKas(models.Model):
 
     @classmethod
     def create_histori(cls,id_user,id_kelas,deskripsi,jenis,nominal):
-        histori = cls(id_user=id_user,id_kelas=id_kelas,deskripsi=deskripsi,jenis=jenis,nominal=nominal)
+        user = get_object_or_404(UserData,id_user=id_user)
+        kelas = get_object_or_404(Kelas,id_kelas=id_kelas)
+
+        histori = cls(id_user=user,id_kelas=kelas,deskripsi=deskripsi,jenis=jenis,nominal=nominal)
         histori.save()
         return True
         
@@ -134,6 +138,15 @@ class BoardingKelas(models.Model):
     pengirim = models.ForeignKey(UserData,on_delete=models.CASCADE,db_column='pengirim')
     id_kelas = models.ForeignKey(Kelas,on_delete=models.CASCADE,null=True,db_column='id_kelas')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def create_boarding(cls, pesan, pengirim_id, id_kelas_id):
+        pengirim = get_object_or_404(UserData, id_user=pengirim_id)
+        id_kelas = get_object_or_404(Kelas, id_kelas=id_kelas_id)
+        
+        boarding = cls.objects.create(pesan=pesan, pengirim=pengirim, id_kelas=id_kelas)
+        boarding.save()       
+        return True
 
 # class DepositMethod(models.Model):
 #     method_id = models.AutoField(primary_key=True)

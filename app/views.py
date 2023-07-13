@@ -372,6 +372,16 @@ def load_more_boarding(request):
     return render(request, 'siswa/load-boarding.html',{'offset':offset,'isi':isi})
     
 
+
+@login_required(login_url=url_login)
+@role_required('siswa')
+def room(request,slug):
+    data = request.user
+    isi = None
+    if int(slug) == data.id_kelas.id_kelas:
+        isi = BoardingKelas.objects.filter(id_kelas=data.id_kelas).order_by('-id_boarding')[:50]
+    return render(request, "siswa/boarding.html",{"room_name":slug,'slug':slug,'messages':isi})
+
 # BAGIAN GURU
 @login_required(login_url=url_login)
 @role_required('guru')

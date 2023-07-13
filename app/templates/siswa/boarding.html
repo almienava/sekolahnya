@@ -1,19 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% block title %}Home{% endblock %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'assets/css/widgets/chat.css' %}">
+<!-- <link rel="stylesheet" href="{% static 'assets/css/widgets/chat.css' %}"> -->
+
 <div class="page-heading">
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Chatbox</h3>
+                <h3>Boarding Kelas</h3>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Chatbox</li>
+                        <li class="breadcrumb-item active" aria-current="page">BoardingKelas</li>
                     </ol>
                 </nav>
             </div>
@@ -32,46 +33,67 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="chat-content" style="overflow: auto; height: 300px;">
-                            <div class="chat">
-                                {% for chat_message in isi reversed %}
-                                <div class="chat-body">
-                                    <div class="chat-message mb-5">
-                                        <div class="d-flex align-items-start">
-                                            <div class="avatar avatar-md me-3">
-                                                <img src="{{ chat_message.pengirim.profile_pic }}" alt="avatar">
-                                            </div>
-                                            <div class="d-flex w-100" style="margin-top: -5px;">
-                                                <div>
-                                                    <p class="mb-1" style="font-size: 14px;">
-                                                        <b>{{ chat_message.pengirim.nama_lengkap }}</b>
-                                                    </p>
-                                                    <small style="font-size: 14px;">{{ chat_message.pesan }}</small>
+                    <form>
+                        <div class="card-body">
+                                <div class="chat-content" id="chatbox" style="overflow: auto; height: 300px;">
+                                    <div class="chat">
+                                        {% for chat_message in messages reversed %}
+                                        <div class="chat-body">
+                                            <div class="chat-message mt-4">
+                                                <div class="d-flex align-items-start {% if chat_message.pengirim.username == request.user.username %}justify-content-end{% else %}justify-content-start{% endif %}">
+                                                    {% if chat_message.pengirim.username == request.user.username %}
+                                                    <div class="d-flex flex-row-reverse" style="margin-top: -5px;">
+                                                        <div>
+                                                            <p class="mb-1" style="font-size: 14px;">
+                                                                <b>{{ chat_message.pengirim.nama_lengkap }}</b>
+                                                            </p>
+                                                            <small style="font-size: 14px;">{{ chat_message.pesan }}</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="avatar avatar-md ms-3 me-4">
+                                                        <img src="{{ chat_message.pengirim.profile_pic }}" alt="avatar">
+                                                    </div>
+                                                    {% else %}
+                                                    <div class="avatar avatar-md me-3">
+                                                        <img src="{{ chat_message.pengirim.profile_pic }}" alt="avatar">
+                                                    </div>
+                                                    <div class="d-flex flex-row" style="margin-top: -5px;">
+                                                        <div>
+                                                            <p class="mb-1" style="font-size: 14px;">
+                                                                <b>{{ chat_message.pengirim.nama_lengkap }}</b>
+                                                            </p>
+                                                            <small style="font-size: 14px;">{{ chat_message.pesan }}</small>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </div>
+                                        {% endfor %}
                                     </div>
                                 </div>
-                                {% endfor %}
+                        </div>
+                        <div class="card-footer">
+                            <div class="message-form d-flex flex-direction-column align-items-center">
+                                <div class="d-flex flex-grow-1 me-2">
+                                    <textarea class="form-control" rows="2" id="my_input"
+                                        placeholder="Type your message.."></textarea>
+                                </div>
+                                <div id="submit_button" style="cursor: pointer;"><i data-feather="send"></i></div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="message-form d-flex flex-direction-column align-items-center">
-                            <div class="d-flex flex-grow-1 me-2">
-                                <textarea class="form-control" rows="2" placeholder="Type your message.."></textarea>
-                            </div>
-                            <a href="#" class="me-3"><i data-feather="paperclip"></i></a>
-                            <a href="#"><i data-feather="send"></i></a>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     </section>
 </div>
+{{slug|json_script:"room_slug"}}
+{{request.user.nama_lengkap|json_script:"nama_lengkap"}}
+{{request.user.id_user|json_script:"token"}}
 
+{{request.user.profile_pic|json_script:"fotoProfile"}}
+<script src="{% static 'assets/js/pages/boarding.js' %}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
  $(document).ready(function() {
@@ -119,4 +141,4 @@
 
 </script>
 
-{% endblock content %}
+{% endblock %}

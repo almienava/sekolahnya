@@ -21,8 +21,9 @@ urlpatterns = [
     path('kas/', KasSiswa.as_view(), name='kas-siswa'),
 
     path('login', LoginUser.as_view(), name='login'),
-    path('boarding/', views.boarding_siswa, name='boarding-siswa'),
     path('load-boarding/', views.load_more_boarding, name='load-boarding-siswa'),
+    # path("<str:slug>", views.room, name="room"),
+    path('boarding/<int:slug>', views.room, name='boarding-siswa'),
 
 
     
