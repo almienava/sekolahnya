@@ -29,7 +29,8 @@
                 <div class="col-12">
                     <div class="card mb-2"{% if not item.status_buka %} style="border-left: 2px solid #dc3545;"{% endif %}>
                         <div class="card-body">
-                            <a href="#" class="list-group-item list-group-item-action">
+                            <a href="{%if item.id_notifikasi.type_notif == 'boarding' %}/boarding/{{request.user.id_kelas.id_kelas}}{%else%}#{%endif%}"
+                             class="list-group-item list-group-item-action">
                                 <div class="d-flex align-items-start">
                                     <div class="avatar avatar-lg me-3">
                                         <img src="{{ item.id_notifikasi.created_by.profile_pic }}" alt="avatar">

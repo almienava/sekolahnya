@@ -276,10 +276,10 @@ class KasSiswa(View):
             kas.update(w4=value,w4_dtm=datetime.now())
         elif pembayaran == 'w5':
             kas.update(w5=value,w5_dtm=datetime.now())
-        userdata = UserData.objects.get(id_user=idUser)
-        HistoriTransaksiKas.create_histori(id_user=userdata, id_kelas=self.data.id_kelas,
+        userdata = UserData.objects.filter(id_user=idUser)[:1]
+        HistoriTransaksiKas.create_histori(id_user=userdata, id_kelas=self.data.id_kelas.id_kelas,
                                                       deskripsi=deskripsi_, jenis=jenis_, nominal=5000)
-        return redirect('kas-siswa')
+        return redirect('/kas/')
 
         
 

@@ -1,19 +1,33 @@
-{% for chat_message in isi reversed %}
-                                <div class="chat-body">
-                                    <div class="chat-message mb-5">
-                                        <div class="d-flex align-items-start">
-                                            <div class="avatar avatar-md me-3">
-                                                <img src="{{ chat_message.pengirim.profile_pic }}" alt="avatar">
-                                            </div>
-                                            <div class="d-flex w-100" style="margin-top: -5px;">
-                                                <div>
-                                                    <p class="mb-1" style="font-size: 14px;">
-                                                        <b>{{ chat_message.pengirim.nama_lengkap }}</b>
-                                                    </p>
-                                                    <small style="font-size: 14px;">{{ chat_message.pesan }}</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {% endfor %}
+{% for chat_message in messages reversed %}
+<div class="chat-body">
+    <div class="chat-message mt-4">
+        <div class="d-flex align-items-start {% if chat_message.pengirim.username == request.user.username %}justify-content-end{% else %}justify-content-start{% endif %}">
+            {% if chat_message.pengirim.username == request.user.username %}
+            <div class="d-flex flex-row-reverse" style="margin-top: -5px;">
+                <div>
+                    <p class="mb-1" style="font-size: 14px;">
+                        <b>{{ chat_message.pengirim.nama_lengkap }}</b>
+                    </p>
+                    <small style="font-size: 14px;">{{ chat_message.pesan }}</small>
+                </div>
+            </div>
+            <div class="avatar avatar-md ms-3 me-4">
+                <img src="{{ chat_message.pengirim.profile_pic }}" alt="avatar">
+            </div>
+            {% else %}
+            <div class="avatar avatar-md me-3">
+                <img src="{{ chat_message.pengirim.profile_pic }}" alt="avatar">
+            </div>
+            <div class="d-flex flex-row" style="margin-top: -5px;">
+                <div>
+                    <p class="mb-1" style="font-size: 14px;">
+                        <b>{{ chat_message.pengirim.nama_lengkap }}</b>
+                    </p>
+                    <small style="font-size: 14px;">{{ chat_message.pesan }}</small>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endfor %}

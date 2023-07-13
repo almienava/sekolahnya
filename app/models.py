@@ -4,6 +4,8 @@ from django.conf import settings
 import uuid
 from datetime import datetime
 from django.shortcuts import get_object_or_404
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class CustomUserManager(BaseUserManager):
@@ -51,6 +53,11 @@ class JadwalPiket(models.Model):
     id_user = models.ForeignKey(UserData, on_delete=models.CASCADE,null=True,db_column='id_user')
     id_kelas = models.ForeignKey(Kelas, on_delete=models.CASCADE,null=True,db_column='id_kelas')
 
+
+# 0 = salah input kas
+# 1 = Pemasukan Kas
+# 2 = Pemasukan Lain
+# 3 = Pengeluaran kas
 class Kas(models.Model):
     id_trx_kas = models.AutoField(primary_key=True)
     id_user = models.ForeignKey(UserData, on_delete=models.CASCADE,null=True,db_column='id_user')
@@ -131,6 +138,7 @@ class Notifikasi_user(models.Model):
     id_user = models.ForeignKey(UserData,on_delete=models.CASCADE,db_column='id_user')
     status_buka = models.BooleanField(default=False)
 
+
 class BoardingKelas(models.Model):
     id_boarding = models.AutoField(primary_key=True)
     pesan = models.TextField(null=True)
@@ -147,6 +155,7 @@ class BoardingKelas(models.Model):
         boarding = cls.objects.create(pesan=pesan, pengirim=pengirim, id_kelas=id_kelas)
         boarding.save()       
         return True
+
 
 # class DepositMethod(models.Model):
 #     method_id = models.AutoField(primary_key=True)
