@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var offset = 0;
+    var offset = 25;
     var limit = 25;
     var loading = false;
 

@@ -14,5 +14,6 @@ handler403 = 'app.views.error_handler_403'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(r'', include('app.siswa.urls')),
+    path(r'', include('app.guru.urls')),
     path(r'', include('app.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

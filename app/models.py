@@ -30,7 +30,8 @@ class UserData(AbstractBaseUser):
     is_login = models.BooleanField(default=False)
     create_dtm = models.DateTimeField(auto_now_add=True)
     id_parent_user = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, related_name='parent_users',db_column='id_parent_user')
-    profile_pic = models.TextField(null=True, blank=True)
+    profile_pic = models.TextField(default="https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg",
+                                   null=True, blank=True)
     username = models.CharField(max_length=255, unique=True)
     role = models.CharField(max_length=255)
     approved = models.BooleanField(default=False)

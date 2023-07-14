@@ -11,24 +11,13 @@ import requests
 from django.contrib.auth.hashers import check_password,make_password
 from django.db.models import Sum,Q
 from django.utils import timezone
-from django.views.generic.base import View,TemplateView
+from django.views.generic.base import View
+from app.atributes import get_hari_ini
 
 
 url_login = '/login'
 
-def get_hari_ini():
-    hari_ini = datetime.now().strftime('%A').lower()
-    hari_indonesia = {
-        'monday': 'senin',
-        'tuesday': 'selasa',
-        'wednesday': 'rabu',
-        'thursday': 'kamis',
-        'friday': 'jumat',
-        'saturday': 'sabtu',
-        'sunday': 'minggu'
-    }
-    
-    return hari_indonesia.get(hari_ini, '')
+
 
 #dashboard siswa
 @login_required(login_url=url_login)
@@ -46,7 +35,7 @@ def dashboard_siswa(request):
     tugas_tersedia = tugas_.count()
 
     notif = Notifikasi_user.objects.filter(status_buka = False,id_user=user.id_user).count()
-    return render(request, 'siswa/dashboard-siswa.html',
+    return render(request, 'siswa/dashboard.html',
                    {'hari_ini': hari_ini,
                     'piket':piket,'jadwal_pelajaran':jadwal_pelajaran,
                     'total_kas':kas_data(request)[1],'tugas_selesai':tugas_selesai,
@@ -109,17 +98,17 @@ class FiturSiswa(View):
             path_html = f'siswa/notifikasi/{self.nama}.html'
             notifModelFalse = self.notifModels.filter(status_buka=False)
             TotalNotifFalse = notifModelFalse.count() # menghitung jumlah status yang belum di buka
+            offset = int(request.GET.get('offset', 25)) # offset akan bertambah jika scroll,defaultnya 0
 
-            offset = int(request.GET.get('offset', 0)) # offset akan bertambah jika scroll,defaultnya 0
-            notifModelLoadMore = self.notifModels[offset:offset+self.limit] # ngeload notif dri 0 + limit nya yaitu 10
 
             # tampilin notif semua tapi dilimit
             result_notif = filter_waktu(self.notifModels[:self.limit])
             # Tapi Kalau Notif yang belum dibuka 
             # lebih dari 10 maka tampilin semua yang belum di buka
-            if TotalNotifFalse >= 10:
+            if TotalNotifFalse >= 25:
                 result_notif = filter_waktu(self.notifModels[:TotalNotifFalse])
-            
+                offset = TotalNotifFalse
+            notifModelLoadMore = self.notifModels[offset:offset+self.limit] # ngeload notif dri 0 + limit nya yaitu 10
             
             notifModelFalse.update(status_buka=True) # untuk update status jika sudah di buka
 
@@ -360,10 +349,3 @@ def boarding_room(request,slug):
         isi = BoardingKelas.objects.filter(id_kelas=data.id_kelas).order_by('-id_boarding')[:50]
     return render(request, "siswa/boarding.html",{'slug':slug,'messages':isi})
 
-# BAGIAN GURU
-@login_required(login_url=url_login)
-@role_required('guru')
-def dashboard_guru(request):
-    hari_ini = get_hari_ini()
-    piket = JadwalPiket.objects.filter(hari=hari_ini)
-    return render(request, 'siswa/dashboard-siswa.html', {'hari_ini': hari_ini,'piket':piket})
