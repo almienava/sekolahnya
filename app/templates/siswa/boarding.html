@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load customTags %}
 {% block title %}Home{% endblock %}
 {% block content %}
 <!-- <link rel="stylesheet" href="{% static 'assets/css/widgets/chat.css' %}"> -->
@@ -42,10 +43,15 @@
                                             <div class="chat-message mt-4">
                                                 <div class="d-flex align-items-start {% if chat_message.pengirim.username == request.user.username %}justify-content-end{% else %}justify-content-start{% endif %}">
                                                     {% if chat_message.pengirim.username == request.user.username %}
-                                                    <div class="d-flex flex-row-reverse" style="margin-top: -5px;">
+                                                    <div class="d-flex flex-row-reverse" style="margin-top: -2px;">
                                                         <div>
-                                                            <p class="mb-1" style="font-size: 14px;">
-                                                                <b>{{ chat_message.pengirim.nama_lengkap }}</b>
+                                                            <p class="mb-1" style="font-size: 14px;text-align: right;">
+                                                                <span style="font-size: 10px; margin-right: 5px;">
+                                                                    {{ chat_message.created_at|filter_waktu }}
+                                                                </span>
+                                                                <b data-tippy-content="{{chat_message.pengirim.nama_lengkap}} ({{chat_message.pengirim.role|capfirst}})"
+                                                                style="color: darkcyan;"
+                                                                >{{ chat_message.pengirim.nama_lengkap|split:" "|first }}</b>
                                                             </p>
                                                             <small style="font-size: 14px;">{{ chat_message.pesan }}</small>
                                                         </div>
@@ -57,10 +63,13 @@
                                                     <div class="avatar avatar-md me-3">
                                                         <img src="{{ chat_message.pengirim.profile_pic }}" alt="avatar">
                                                     </div>
-                                                    <div class="d-flex flex-row" style="margin-top: -5px;">
+                                                    <div class="d-flex flex-row" style="margin-top: -3px;">
                                                         <div>
                                                             <p class="mb-1" style="font-size: 14px;">
-                                                                <b>{{ chat_message.pengirim.nama_lengkap }}</b>
+                                                                <b data-tippy-content="{{chat_message.pengirim.nama_lengkap}} ({{chat_message.pengirim.role|capfirst}})" style="color: darkcyan;">{{ chat_message.pengirim.nama_lengkap|split:" "|first }}</b>
+                                                                <span style="font-size: 10px; margin-left: 5px;">
+                                                                    {{ chat_message.created_at|filter_waktu }}
+                                                                </span>
                                                             </p>
                                                             <small style="font-size: 14px;">{{ chat_message.pesan }}</small>
                                                         </div>
@@ -91,7 +100,12 @@
 {{slug|json_script:"room_slug"}}
 {{request.user.nama_lengkap|json_script:"nama_lengkap"}}
 {{request.user.id_user|json_script:"token"}}
-
+<style>
+    .tippy-box[data-theme="darkth"] {
+  background-color: black;
+  color: white;
+}
+</style>
 {{request.user.profile_pic|json_script:"fotoProfile"}}
 <script src="{% static 'assets/js/pages/boarding.js' %}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -140,5 +154,18 @@
 
 
 </script>
-
+<script src="https://unpkg.com/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      tippy('[data-tippy-content]', {
+        allowHTML: true,
+        placement: 'top',
+        theme:'darkth',
+        trigger: 'click mouseenter', // Menampilkan tooltip saat diklik
+        interactive: true,
+        hideOnClick:true,
+      });
+    });
+  </script>
 {% endblock %}

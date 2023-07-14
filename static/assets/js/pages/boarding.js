@@ -74,8 +74,12 @@ chatSocket.onmessage = function (e) {
         avatar.classList.add("avatar", "avatar-md", "ms-3","me-4");
         dFlexItem = "justify-content-end"; // justify-content-end
         xFlexW100Item = "flex-row-reverse"; // "flex-row-reverse"
+        tanggal_ = "<span style='font-size: 10px; margin-right: 5px;'>Baru saja</span>"
+        tanggal = ""
     }else{
         avatar.classList.add("avatar", "avatar-md", "me-3");
+        tanggal = "<span style='font-size: 10px; margin-left: 5px;'>Baru saja</span>"
+        tanggal_ = ""
 
     }
     
@@ -90,7 +94,7 @@ chatSocket.onmessage = function (e) {
     dFlexW100.classList.add("d-flex", xFlexW100Item);
 
     var content = document.createElement("div");
-    content.innerHTML = "<p class='mb-1' style='font-size: 14px;'><b>" + data.nama + "</b></p>" +
+    content.innerHTML = "<p class='mb-1' style='font-size: 14px;'>"+tanggal_+"<b style='color: darkcyan;'>" + data.nama.split(" ")[0] + "</b>"+tanggal+"</p>" +
         "<small style='font-size: 14px;'>" + data.message + "</small>";
 
     dFlexW100.appendChild(content);
