@@ -78,7 +78,7 @@ class FiturSiswa(View):
             return super().dispatch(request, *args, **kwargs)
     
     @method_decorator(login_required(login_url=url_login))
-    @method_decorator(role_required('siswa'))
+    @method_decorator(role_required(['siswa','guru']))
     def get(self, request):
         path_html = f'siswa/{self.nama}.html'
         
@@ -258,7 +258,7 @@ class KasSiswa(View):
 
 # ganti password / ubah password
 @login_required(login_url=url_login)
-@role_required('siswa')
+@role_required(['siswa','guru'])
 def ganti_password(request):
     data = request.user
     if request.method == 'POST':
@@ -282,7 +282,7 @@ def ganti_password(request):
 
 # edit akun siswa / pengaturan umum siswa
 @login_required(login_url=url_login)
-@role_required('siswa')
+@role_required(['siswa','guru'])
 def pengaturan_siswa_umum(request):
     data = request.user
     if request.method == 'POST':
