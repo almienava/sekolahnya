@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load customTags %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css' %}">
+<link rel="stylesheet" href="https://cdn.datatables.net/rowreorder/1.3.3/css/rowReorder.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css">
+<link rel="stylesheet" href="{% static 'assets/extensions/flatpickr/flatpickr.min.css' %}">
+
+<div class="pahe-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Tugas</h3>
+                <p class="text-subtitle text-muted">
+                   Daftar tugas-tugas yang tersedia
+                </p>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/dashboard-siswa/">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Tugas
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="page-content">
+    <section class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="card">
+                    <div class="card-body px-0 py-1 overflow-auto">
+                        <div class="table-responsive">
+                            <table id="table-tugas" class="table table-hover table-lg">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">No</th>
+                                        <th class="text-center">Nama Tugas</th>
+                                        <th class="text-center">Pelajaran</th>
+                                        <th class="text-center">Tenggat Waktu</th>
+                                        <th class="text-center">Kelas</th>
+                                        <th class="text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for x in list_tugas %}
+                                    <tr>
+                                        <td class="col-auto text-center">
+                                            <p class=" mb-0">{{forloop.counter}}</p>
+                                        </td>
+                                        <td class="col-auto text-center">
+                                            <p class=" mb-0">{{x.nama_tugas}}</p>
+                                        </td>
+                                        <td class="col-auto text-center">
+                                            <p class=" mb-0">{{x.id_pelajaran.nama_pelajaran|upper}}</p>
+                                        </td>
+                                        <td class="col-auto text-center">
+                                            <p class=" mb-0">{{x.end_date}}</p>
+                                        </td>
+                                        <td class="col-auto text-center">
+                                            <p class="mb-0">{{x.id_kelas.nama_kelas}}</p>
+                                        </td>
+                                        <td class="col-auto text-center">
+                                            <button type="button" class="btn btn-outline-primary m-1"
+                                                data-bs-toggle="modal" data-bs-target="#tugas-modal{{forloop.counter}}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bi bi-pencil-square">
+                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                                                </path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
+
+                                            </path></svg></button>
+                                        </td>
+                                    </tr>
+
+                                    <!-- ini modal konten -->
+                                    <div class="modal fade text-left" id="tugas-modal{{forloop.counter}}" tabindex="-1" role="dialog"
+                                        aria-labelledby="myModalLabel33" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+                                            role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title" id="myModalLabel33">Tugas {{x.id_pelajaran.nama_pelajaran|capfirst}} {{x.id_kelas.nama_kelas|capfirst}}</h4>
+                                                    <button type="button" class="close" data-bs-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <i data-feather="x"></i>
+                                                    </button>
+                                                </div>
+                                                <form action="/tugas-kelas" method="post">
+                                                    {% csrf_token %}
+                                                    <div class="modal-body">
+                                                        <div class="form-group">
+                                                            <label for="nama_tugas" class="form-label">Nama Tugas</label>
+                                                            <input class="form-control" name="nama_tugas" value="{{x.nama_tugas}}">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="pelajaran" class="form-label">Pelajaran</label>
+                                                            <select id="pelajaran" class="form-control" name="pelajaran">
+                                                                {% for i in ddPelajaran%}
+                                                                <option value="{{i.id_pelajaran}}" 
+                                                                {% if i.id_pelajaran == x.id_pelajaran.id_pelajaran%} selected {%endif%}>
+                                                                {{i.nama_pelajaran|capfirst}}</option>
+                                                                {%endfor%}
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="end-date" class="form-label">Tenggat Waktu</label>
+                                                            <input type="date" name="tenggat_waktu" class="form-control mb-3 flatpickr-no-config" value="{{ x.end_date|date:'Y-m-d' }}">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="file_tugas" class="form-label">File Tugas</label>
+                                                            <input class="form-control" type="file" id="formFileMultiple" multiple>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="exampleFormControlTextarea1">Deskripsi Tugas</label>
+                                                                <textarea class="form-control" id="catatan" name="catatan" rows="3">{{x.deskripsi}}</textarea>
+                                                        </div>
+                                                        {%if x.path_file is not None %}
+                                                        <div class="mb-3">
+                                                            <label class="col-md-2">File Tugas</label>
+                                                            <span class="col-md-2">: <a href="{{x.path_file}}" target="_blank" class="badge bg-light-primary me-2"><i class="bi bi-download"></i> Klik disini</a></span>
+                                                        </div>
+                                                        {%endif%}
+                                                    </div>
+                                                    <input type="hidden" name="idTugas" value="{{x.id_tugas}}">
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                                            <i class="bx bx-x"></i>
+                                                            <span>Tutup</span>
+                                                        </button>
+                                                        <button type="submit" class="btn btn-primary ms-1" data-bs-dismiss="modal">
+                                                            <i class="bx bx-check"></i>
+                                                            <span>Submit</span>
+                                                        </button>
+                                                    </div>
+                                                    
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="{% static 'assets/extensions/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'assets/extensions/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/rowreorder/1.3.3/js/dataTables.rowReorder.min.js"></script>
+<script src="{% static 'assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
+<script src="{% static 'assets/js/pages/datatables.js' %}"></script>
+<script src="{% static 'assets/extensions/flatpickr/flatpickr.min.js' %}"></script>
+<script src="{% static 'assets/js/pages/date-picker.js' %}"></script>
+
+{% endblock%}

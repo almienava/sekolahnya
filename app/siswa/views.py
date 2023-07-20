@@ -329,7 +329,7 @@ def pengaturan_siswa_umum(request):
 
 
 @login_required(login_url=url_login)
-@role_required('siswa')
+@role_required(['siswa','guru'])
 def load_more_boarding(request):
     data = request.user
     offset = request.GET.get('offset', 50)
@@ -341,7 +341,7 @@ def load_more_boarding(request):
 
 
 @login_required(login_url=url_login)
-@role_required('siswa')
+@role_required(['siswa','guru'])
 def boarding_room(request,slug):
     data = request.user
     isi = None

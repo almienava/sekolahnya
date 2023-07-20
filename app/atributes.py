@@ -27,7 +27,7 @@ menu_siswa={'siswa':{
         'dashboard': {'url': '/dashboard-guru/', 'icon': 'bi bi-grid-fill', 'text': 'Dashboard'},
     'jadwal-mengajar': {'url': '/jadwal-mengajar', 'icon': 'bi bi-list-task', 'text': 'Jadwal Mengajar'},
     'absensi': {'url': '/absensi', 'icon': 'bi bi-person-check-fill', 'text': 'Absensi'},
-    'Tugas Kelas': {'url': '/tugas', 'icon': 'bi bi-file-earmark-text-fill', 'text': 'Tugas Kelas'},
+    'Tugas Kelas': {'url': '/tugas-kelas', 'icon': 'bi bi-file-earmark-text-fill', 'text': 'Tugas Kelas'},
     'kas': {'url': f'/kas/', 'icon': 'bi bi-wallet-fill', 'text': 'Kas Kelas'},
     'boarding': {'url': '/boarding/', 'icon': 'bi bi-easel-fill', 'text': 'Boarding Kelas'},
     'jadwal-pelajaran': {'url': '/jadwal-pelajaran', 'icon': 'bi bi-calendar-event-fill', 'text': 'Jadwal Pelajaran'},
@@ -35,7 +35,7 @@ menu_siswa={'siswa':{
     'list-wali-murid': {'url': '/', 'icon': 'bi bi-person-lines-fill', 'text': 'Daftar List','submenu':[{'title':'List Siswa','link':'/list-siswa'},
                                                                                                         {'title':'List Wali Murid','link':'/list-wali-murid'},
                                                                                                         {'title':'List Pengajar','link':'/list-pengajar'}]},
-    'pengaturan-kelas': {'url': '/', 'icon': '', 'text': 'Management Kelas','submenu':[{'title':'Edit Jadwal Pelajaran','link':'/edit-jadwal-pelajaran'},{'title':'Edit Jadwal Piket','link':'/edit-jadwal-piket'}]},
+    'pengaturan-kelas': {'url': '/edit-jadwal-pelajaran', 'icon': '', 'text': 'Edit Jadwal Pelajaran'},
     'setting': {'url': '/', 'icon': 'settings', 'text': 'Pengaturan','submenu':[{'title':'Umum','link':'/pengaturan-umum'},{'title':'Ubah Password','link':'/ubah-password'}]}, 
     'logout': {'url': '/logout', 'icon': 'bi bi-box-arrow-left', 'text': 'Logout'}
     }

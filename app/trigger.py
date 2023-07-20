@@ -37,3 +37,16 @@ def notif_historiTransaksi(sender,instance,created,**kwargs):
         Notifikasi.objects.create(created_by=instance.id_user,
                                   type_notif=jenis,
                                   id_kelas=instance.id_kelas)
+        
+
+@receiver(post_save,sender=Tugas)
+def insert_tugasUser(sender,instance,created,**kwargs):
+    if created:
+        user_data = UserData.objects.filter(id_kelas=instance.id_kelas)
+        tugas_user_objects = []
+        for user in user_data:
+            tugas_user_objects.append(TugasUser(id_tugas=instance.id_tugas,
+                                                id_user = user,
+                                                status_tugas = 0))
+                                                
+        TugasUser.objects.bulk_create(tugas_user_objects)

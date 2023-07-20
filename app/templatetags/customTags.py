@@ -2,7 +2,7 @@ from django import template
 from django.utils import timezone
 from datetime import timedelta
 import pytz
-
+from datetime import datetime
 register = template.Library()
 
 @register.filter(name='split')
@@ -28,4 +28,7 @@ def filter_waktu(created_at):
 
 
 
-
+@register.filter(name='format_tanggal')
+def format_tanggal(tanggal):
+    formatted_end_date = datetime.strptime(tanggal, "%d %b %Y").strftime("%Y-%m-%d")
+    return formatted_end_date

@@ -53,8 +53,14 @@ class JadwalPiket(models.Model):
     hari = models.CharField(max_length=10,null=True)
     id_user = models.ForeignKey(UserData, on_delete=models.CASCADE,null=True,db_column='id_user')
     id_kelas = models.ForeignKey(Kelas, on_delete=models.CASCADE,null=True,db_column='id_kelas')
-
-
+    
+    @classmethod
+    def create_jadwalPiket(cls,id_user,id_kelas,hari):
+        user = get_object_or_404(UserData,id_user=id_user)
+        kelas = get_object_or_404(Kelas,id_kelas=id_kelas)
+        jadwal = cls(id_user = user,id_kelas =kelas,hari=hari)
+        jadwal.save()
+        return True
 # 0 = salah input kas
 # 1 = Pemasukan Kas
 # 2 = Pemasukan Lain
